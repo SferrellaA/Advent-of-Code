@@ -6,6 +6,81 @@ from grid import read_stdin
 grid, guard = read_stdin("^")
 grid[guard] = "."
 
+def ahead(row, col, face):
+    if face == "^":
+        return (row-1, col)
+    if face == ">":
+        return (row, col+1)
+    if face == "v":
+        return (row+1, col)
+    if face == "<":
+        return (row, col-1)
+
+def rotate(face):
+    if face == ">":
+        return "v"
+    if face == "v":
+        return "<"
+    if face == "<":
+        return "^"
+    if face == "^":
+        return ">"
+
+'''
+def step(row, col, face):
+    facing = ahead(row, col, face)
+    if facing not in grid:
+        return True, None
+    if grid[facing] == "#":
+        face = rotate(face)
+    else:
+        row, col = facing
+    return False, (row, col, face)
+'''
+
+def scan(row, col, face):
+    potential = ahead(row, col, face)
+    path = []
+    while True:
+        if (row, col, face) in path:
+            return True
+        path.append((row, col, face))
+
+        facing = ahead(row, col, face)
+        if facing not in grid:
+            return False
+        if grid[facing] == "#" or facing == potential:
+            face = rotate(face)
+        else:
+            row, col = facing
+
+
+row, col = guard
+face = "^"
+blockers = []
+
+while True:
+    facing = ahead(row, col, face)
+    if facing not in grid:
+        break
+
+    if scan(row, col, face):
+
+        blockers.append(ahead(row, col, face))
+    
+    if grid[facing] == "#":
+        face = rotate(face)
+    else:
+        row, col = facing
+
+print(blockers)
+print(len(blockers))       
+# 1835 is too high, 1746 too low
+
+
+
+
+'''
 def scan(row, col, face, path, start):
     if (row, col) not in grid:
         #print(path)
@@ -84,5 +159,5 @@ while True:
 
 print(potentials)
 print(len(potentials))
+'''
 
-# 1835 is too high, 1746 too low
