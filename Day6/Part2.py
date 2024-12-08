@@ -45,7 +45,6 @@ def scan(row, col, face):
         if (row, col, face) in path:
             return True
         path.append((row, col, face))
-
         facing = ahead(row, col, face)
         if facing not in grid:
             return False
@@ -58,24 +57,29 @@ def scan(row, col, face):
 row, col = guard
 face = "^"
 blockers = []
+failures = []
 
 while True:
     facing = ahead(row, col, face)
+    print((row, col, face))
     if facing not in grid:
         break
-
-    if scan(row, col, face):
-
-        blockers.append(ahead(row, col, face))
-    
     if grid[facing] == "#":
+        #print("#")
         face = rotate(face)
-    else:
-        row, col = facing
+        continue
+    if facing not in blockers and facing not in failures:
+        if scan(row, col, face):
+            blockers.append(facing)
+        else:
+            failures.append(facing)
+    row, col = facing
 
 print(blockers)
 print(len(blockers))       
-# 1835 is too high, 1746 too low
+# 1835 is too high, 1746 too low; 1784 was it
+
+# man this one was bullshit
 
 
 
