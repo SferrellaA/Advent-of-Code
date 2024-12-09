@@ -11,18 +11,18 @@ for line in stdin:
     calibrations.append((int(line[0][:-1]), [int(l) for l in line[1:]]))
 
 calibration = 0
-working = []
 
 def evaluate(value, target, operators, operands):
-    if value + sum(operators) > target:
-        return False
+    global calibration
+    # There goes my attempt to spare some cycles...
+    # Too tired to tell whaat this is doing that casues it to skip things that work
+    #if value + sum(operators) > target:
+    #    return False
 
     if operators == []:
         if value == target:
             print(f"\t{operands}")
-            global calibration
-            calibration += value
-            working.append(operands)
+            calibration += target
             return True
         return False
     
@@ -36,4 +36,6 @@ for equation in calibrations:
     evaluate(operators[0], target, operators[1:], [])
 
 print(calibration)
+# 20665820890776 also too low
 # 20665820948644 is too low
+# 20665830408335
