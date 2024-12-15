@@ -1,3 +1,30 @@
+from sys import argv
+disk = [int(i) for i in list(open(argv[1], 'r').read().strip())]
+rev = []
+fileid = 0
+for i, val in enumerate(disk):
+    if i % 2 == 0: # file
+        disk[i] = (fileid, val)
+        rev.insert(0, (fileid, val))
+        fileid += 1
+    else: # space
+        disk[i] = (None, val)
+
+def print_disk():
+    global disk
+    flat = []
+    for thing in disk:
+        fid, size = thing
+        if size == 0:
+            continue
+        if fid == None:
+            fid = '.'
+        else:
+            fid = f'{fid}'
+        flat += [fid] * size
+    print()
+    print(''.join(flat))
+
 '''
 2333133121414131402
 00...111...2...333.44.5555.6666.777.888899
@@ -8,31 +35,28 @@
 2858
 '''
 
-from sys import argv
-disk = [int(i) for i in list(open(argv[1], 'r').read().strip())]
-fileid = 0
-for i, val in enumerate(disk):
-    if i % 2 == 0: # file
-        disk[i] = [fileid] * val
-        fileid += 1
-    else: # space
-        disk[i] = (None, val)
-print(disk)
-print()
-for i, v in enumerate(disk):
-    if type(v) is list:
-        continue
-    for j, r in enumerate(reversed(disk)):
-        ival, ilen = v
-        jval, jlen = r
-        if jlen <= ilen:
-            ilen -= jlen
-            disk.insert(i, r)
-            disk.remove(r)
+#print_disk()
+for r in rev:
+    rfid, rsize = r
+    j = disk.index(r)+1
+    for i in range(j):
+        ifid, isize = disk[i]
+        if ifid is not None:
+            continue
+        if rsize <= isize:
+            disk[i] = (None, isize-rsize)
+            disk.insert(i, (None, rsize))
+            disk[i], disk[j] = disk[j], disk[i]
             break
-    #disk[i] = [0] * v[1]
-print(disk)
+    #print_disk()
 
-exit()
-#disk = sum(disk, [])
-
+total = 0
+index = 0
+for thing in disk:
+    fid, size = thing
+    if fid == None:
+        fid = 0
+    for i in range(size):
+        total += (index * fid)
+        index += 1
+print(total)
